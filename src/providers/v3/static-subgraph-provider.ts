@@ -44,7 +44,7 @@ import {
   USDC_MOONBEAM,
   USDC_OPTIMISM,
   USDC_OPTIMISM_GOERLI,
-  USDC_OPTIMISTIC_KOVAN,
+  USDC_OPTIMISTIC_KOVAN, USDC_PLANQ,
   USDC_POLYGON,
   USDC_RINKEBY,
   USDC_ROPSTEN,
@@ -71,7 +71,7 @@ import {
   WETH_POLYGON,
   WMATIC_POLYGON,
   WMATIC_POLYGON_MUMBAI,
-  WXDAI_GNOSIS,
+  WXDAI_GNOSIS
 } from '../token-provider';
 
 import { IV3PoolProvider } from './pool-provider';
@@ -187,6 +187,10 @@ const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     DAI_MOONBEAM,
     USDC_MOONBEAM,
     WBTC_MOONBEAM,
+  ],
+  [ChainId.PLANQ]: [
+    WRAPPED_NATIVE_CURRENCY[ChainId.PLANQ],
+    USDC_PLANQ,
   ],
 };
 

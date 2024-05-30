@@ -572,6 +572,14 @@ export const WBTC_GNOSIS = new Token(
   'Wrapped BTC from Ethereum on Gnosis'
 );
 
+export const USDC_PLANQ = new Token(
+  ChainId.PLANQ,
+  '0x75e20c5d4aade76143b8b74d1c5e2865347f9d3b',
+  18,
+  'USDC',
+  'USD Coin bridged using Deltaswap'
+);
+
 // Moonbeam Tokens
 export const USDC_MOONBEAM = new Token(
   ChainId.MOONBEAM,

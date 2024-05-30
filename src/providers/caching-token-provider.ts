@@ -33,6 +33,7 @@ import {
   USDC_ARBITRUM_GOERLI,
   USDC_ARBITRUM_RINKEBY,
   USDC_BSC,
+  USDC_PLANQ,
   USDC_ETHEREUM_GNOSIS,
   USDC_MAINNET,
   USDC_MOONBEAM,
@@ -154,6 +155,10 @@ export const CACHE_SEED_TOKENS: {
     DAI: DAI_BSC,
     BTC: BTC_BSC,
     WBNB: WRAPPED_NATIVE_CURRENCY[ChainId.BSC],
+  },
+  [ChainId.PLANQ]: {
+    USDC: USDC_PLANQ,
+    WPLQ: WRAPPED_NATIVE_CURRENCY[ChainId.PLANQ],
   },
 
   // Currently we do not have providers for Moonbeam mainnet or Gnosis testnet

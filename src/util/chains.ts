@@ -20,6 +20,7 @@ export enum ChainId {
   GNOSIS = 100,
   MOONBEAM = 1284,
   BSC = 56,
+  PLANQ = 7070,
 }
 
 // WIP: Gnosis, Moonbeam
@@ -40,6 +41,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.CELO_ALFAJORES,
   ChainId.CELO,
   ChainId.BSC,
+  ChainId.PLANQ,
   // Gnosis and Moonbeam don't yet have contracts deployed yet
 ];
 
@@ -112,6 +114,8 @@ export const ID_TO_CHAIN_ID = (id: number): ChainId => {
       return ChainId.GNOSIS;
     case 1284:
       return ChainId.MOONBEAM;
+    case 7070:
+      return ChainId.PLANQ;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -136,6 +140,7 @@ export enum ChainName {
   GNOSIS = 'gnosis-mainnet',
   MOONBEAM = 'moonbeam-mainnet',
   BSC = 'bsc-mainnet',
+  PLANQ = 'planq-mainnet',
 }
 
 
@@ -147,6 +152,7 @@ export enum NativeCurrencyName {
   GNOSIS = 'XDAI',
   MOONBEAM = 'GLMR',
   BNB = "BNB",
+  PLQ = "PLQ",
 }
 export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
   [ChainId.MAINNET]: [
@@ -220,6 +226,11 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
     'BNB',
     '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   ],
+  [ChainId.PLANQ]: [
+    'PLQ',
+    'PLQ',
+    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  ],
 };
 
 export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
@@ -241,6 +252,7 @@ export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
   [ChainId.GNOSIS]: NativeCurrencyName.GNOSIS,
   [ChainId.MOONBEAM]: NativeCurrencyName.MOONBEAM,
   [ChainId.BSC]: NativeCurrencyName.BNB,
+  [ChainId.PLANQ]: NativeCurrencyName.PLQ,
 };
 
 export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
@@ -281,6 +293,8 @@ export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
       return ChainName.GNOSIS;
     case 1284:
       return ChainName.MOONBEAM;
+    case 7070:
+      return ChainName.PLANQ;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -324,6 +338,8 @@ export const ID_TO_PROVIDER = (id: ChainId): string => {
       return process.env.JSON_RPC_PROVIDER_CELO_ALFAJORES!;
     case ChainId.BSC:
       return process.env.JSON_RPC_PROVIDER_BSC!;
+    case ChainId.PLANQ:
+      return process.env.JSON_RPC_PROVIDER_PLANQ!;
     default:
       throw new Error(`Chain id: ${id} not supported`);
   }
@@ -458,6 +474,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
     'WGLMR',
     'Wrapped GLMR'
   ),
+  [ChainId.PLANQ]: new Token(
+    ChainId.PLANQ,
+    '0x5EBCdf1De1781e8B5D41c016B0574aD53E2F6E1A',
+    18,
+    'WPLQ',
+    'Wrapped Planq'
+  ),
 };
 
 function isMatic(
@@ -540,6 +563,31 @@ function isBsc(chainId: number): chainId is ChainId.BSC {
   return chainId === ChainId.BSC;
 }
 
+function isPlanq(chainId: number): chainId is ChainId.PLANQ {
+  return chainId === ChainId.PLANQ;
+}
+
+class PlanqNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId;
+  }
+
+  get wrapped(): Token {
+    if (!isPlanq(this.chainId)) throw new Error('Not bnb');
+    const nativeCurrency = WRAPPED_NATIVE_CURRENCY[this.chainId];
+    if (nativeCurrency) {
+      return nativeCurrency;
+    }
+    throw new Error(`Does not support this chain ${this.chainId}`);
+  }
+
+  public constructor(chainId: number) {
+    if (!isPlanq(chainId)) throw new Error('Not bnb');
+    super(chainId, 18, 'PLQ', 'PLQ');
+  }
+}
+
+
 class BscNativeCurrency extends NativeCurrency {
   equals(other: Currency): boolean {
     return other.isNative && other.chainId === this.chainId;
@@ -616,6 +664,8 @@ export function nativeOnChain(chainId: number): NativeCurrency {
     cachedNativeCurrency[chainId] = new MoonbeamNativeCurrency(chainId);
   else if (isBsc(chainId))
     cachedNativeCurrency[chainId] = new BscNativeCurrency(chainId);
+  else if (isPlanq(chainId))
+    cachedNativeCurrency[chainId] = new PlanqNativeCurrency(chainId);
   else cachedNativeCurrency[chainId] = ExtendedEther.onChain(chainId);
 
   return cachedNativeCurrency[chainId]!;
