@@ -22,7 +22,7 @@ import {
   USDC_MAINNET,
   USDC_MOONBEAM,
   USDC_OPTIMISM,
-  USDC_OPTIMISTIC_KOVAN,
+  USDC_OPTIMISTIC_KOVAN, USDC_PLANQ,
   USDC_POLYGON,
   USDC_ROPSTEN,
   USDT_ARBITRUM,
@@ -33,7 +33,7 @@ import {
   USDT_OPTIMISM,
   USDT_OPTIMISTIC_KOVAN,
   USDT_ROPSTEN,
-  WBTC_GÖRLI,
+  WBTC_GÖRLI
 } from '../../../providers/token-provider';
 import { IV2PoolProvider } from '../../../providers/v2/pool-provider';
 import {
@@ -71,6 +71,7 @@ export const usdGasTokensByChain: { [chainId in ChainId]?: Token[] } = {
   [ChainId.CELO_ALFAJORES]: [CUSD_CELO_ALFAJORES],
   [ChainId.GNOSIS]: [USDC_ETHEREUM_GNOSIS],
   [ChainId.MOONBEAM]: [USDC_MOONBEAM],
+  [ChainId.PLANQ]: [USDC_PLANQ],
 };
 
 export type L1ToL2GasCosts = {
@@ -157,9 +158,9 @@ export abstract class IOnChainGasModelFactory {
   public abstract buildGasModel({
     chainId,
     gasPriceWei,
-    v3poolProvider: V3poolProvider,
+    v3poolProvider,
     token,
-    v2poolProvider: V2poolProvider,
+    v2poolProvider,
     l2GasDataProvider,
   }: BuildOnChainGasModelFactoryType): Promise<
     IGasModel<V3RouteWithValidQuote | MixedRouteWithValidQuote>

@@ -21,6 +21,7 @@ import {
 import { CurrencyAmount } from '../util/amounts';
 import { log } from '../util/log';
 import { routeToString } from '../util/routes';
+
 import { Result } from './multicall-provider';
 import { UniswapMulticallProvider } from './multicall-uniswap-provider';
 import { ProviderConfig } from './provider';
@@ -274,15 +275,15 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
     },
     protected batchParams: BatchParams = {
       multicallChunk: 150,
-      gasLimitPerCall: 1_000_000,
+      gasLimitPerCall: 750_000,
       quoteMinSuccessRate: 0.2,
     },
     protected gasErrorFailureOverride: FailureOverrides = {
-      gasLimitOverride: 1_500_000,
+      gasLimitOverride: 750_000,
       multicallChunk: 100,
     },
     protected successRateFailureOverrides: FailureOverrides = {
-      gasLimitOverride: 1_300_000,
+      gasLimitOverride: 750_000,
       multicallChunk: 110,
     },
     protected blockNumberConfig: BlockNumberConfig = {
@@ -353,9 +354,7 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
     routesWithQuotes: RouteWithQuotes<TRoute>[];
     blockNumber: BigNumber;
   }> {
-    const useMixedRouteQuoter =
-      routes.some((route) => route.protocol === Protocol.V2) ||
-      routes.some((route) => route.protocol === Protocol.MIXED);
+    const useMixedRouteQuoter = false;
 
     /// Validate that there are no incorrect routes / function combinations
     this.validateRoutes(routes, functionName, useMixedRouteQuoter);

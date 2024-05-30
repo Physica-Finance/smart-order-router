@@ -16,6 +16,7 @@ export enum ChainId {
   CELO_ALFAJORES = 44787,
   GNOSIS = 100,
   MOONBEAM = 1284,
+  PLANQ = 7070,
 }
 
 // WIP: Gnosis, Moonbeam
@@ -33,6 +34,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.GÖRLI,
   ChainId.CELO_ALFAJORES,
   ChainId.CELO,
+  ChainId.PLANQ,
   // Gnosis and Moonbeam don't yet have contracts deployed yet
 ];
 
@@ -97,6 +99,8 @@ export const ID_TO_CHAIN_ID = (id: number): ChainId => {
       return ChainId.GNOSIS;
     case 1284:
       return ChainId.MOONBEAM;
+    case 7070:
+      return ChainId.PLANQ;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -118,6 +122,7 @@ export enum ChainName {
   CELO_ALFAJORES = 'celo-alfajores',
   GNOSIS = 'gnosis-mainnet',
   MOONBEAM = 'moonbeam-mainnet',
+  PLANQ = 'planq',
 }
 
 export enum NativeCurrencyName {
@@ -127,6 +132,7 @@ export enum NativeCurrencyName {
   CELO = 'CELO',
   GNOSIS = 'XDAI',
   MOONBEAM = 'GLMR',
+  PLANQ = 'PLQ',
 }
 export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
   [ChainId.MAINNET]: [
@@ -134,6 +140,7 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
     'ETHER',
     '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   ],
+  [ChainId.PLANQ]: ['PLQ',],
   [ChainId.RINKEBY]: [
     'ETH',
     'ETHER',
@@ -201,6 +208,7 @@ export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
   [ChainId.CELO_ALFAJORES]: NativeCurrencyName.CELO,
   [ChainId.GNOSIS]: NativeCurrencyName.GNOSIS,
   [ChainId.MOONBEAM]: NativeCurrencyName.MOONBEAM,
+  [ChainId.PLANQ]: NativeCurrencyName.PLANQ,
 };
 
 export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
@@ -235,6 +243,8 @@ export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
       return ChainName.GNOSIS;
     case 1284:
       return ChainName.MOONBEAM;
+    case 7070:
+      return ChainName.PLANQ;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -258,6 +268,8 @@ export const ID_TO_PROVIDER = (id: ChainId): string => {
       return process.env.JSON_RPC_PROVIDER_KOVAN!;
     case ChainId.OPTIMISM:
       return process.env.JSON_RPC_PROVIDER_OPTIMISM!;
+    case ChainId.PLANQ:
+      return process.env.JSON_RPC_PROVIDER_PLANQ!;
     case ChainId.OPTIMISTIC_KOVAN:
       return process.env.JSON_RPC_PROVIDER_OPTIMISTIC_KOVAN!;
     case ChainId.ARBITRUM_ONE:
@@ -284,6 +296,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
     18,
     'WETH',
     'Wrapped Ether'
+  ),
+  [ChainId.PLANQ]: new Token(
+    7070,
+    '0x5EBCdf1De1781e8B5D41c016B0574aD53E2F6E1A',
+    18,
+    'WPLQ',
+    'Wrapped Planq'
   ),
   [ChainId.ROPSTEN]: new Token(
     3,
@@ -386,6 +405,27 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
     'Wrapped GLMR'
   ),
 };
+
+function isPlanq(chainId: number): chainId is ChainId.PLANQ {
+  return chainId === ChainId.PLANQ;
+}
+class PlanqNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId;
+  }
+  get wrapped(): Token {
+    if (!isPlanq(this.chainId)) throw new Error('Not bnb');
+    const nativeCurrency = WRAPPED_NATIVE_CURRENCY[this.chainId];
+    if (nativeCurrency) {
+      return nativeCurrency;
+    }
+    throw new Error(`Does not support this chain ${this.chainId}`);
+  }
+  public constructor(chainId: number) {
+    if (!isPlanq(chainId)) throw new Error('Not bnb');
+    super(chainId, 18, 'PLQ', 'Planq');
+  }
+}
 
 function isMatic(
   chainId: number
@@ -517,6 +557,8 @@ export function nativeOnChain(chainId: number): NativeCurrency {
     cachedNativeCurrency[chainId] = new GnosisNativeCurrency(chainId);
   else if (isMoonbeam(chainId))
     cachedNativeCurrency[chainId] = new MoonbeamNativeCurrency(chainId);
+  else if (isPlanq(chainId))
+    cachedNativeCurrency[chainId] = new PlanqNativeCurrency(chainId);
   else cachedNativeCurrency[chainId] = ExtendedEther.onChain(chainId);
 
   return cachedNativeCurrency[chainId]!;

@@ -6,7 +6,7 @@ import _ from 'lodash';
 import {
   ITokenListProvider,
   IV2SubgraphProvider,
-  V2SubgraphPool,
+  V2SubgraphPool
 } from '../../../providers';
 import {
   CELO,
@@ -32,6 +32,7 @@ import {
   USDC_MOONBEAM,
   USDC_OPTIMISM,
   USDC_OPTIMISTIC_KOVAN,
+  USDC_PLANQ,
   USDC_POLYGON,
   USDT_ARBITRUM,
   USDT_ARBITRUM_RINKEBY,
@@ -47,6 +48,7 @@ import {
   WGLMR_MOONBEAM,
   WMATIC_POLYGON,
   WMATIC_POLYGON_MUMBAI,
+  WPLQ,
   WXDAI_GNOSIS,
 } from '../../../providers/token-provider';
 import {
@@ -162,6 +164,7 @@ const baseTokensByChain: { [chainId in ChainId]?: Token[] } = {
     CELO_ALFAJORES,
   ],
   [ChainId.GNOSIS]: [WBTC_GNOSIS, WXDAI_GNOSIS, USDC_ETHEREUM_GNOSIS],
+  [ChainId.PLANQ]: [USDC_PLANQ, WPLQ],
   [ChainId.MOONBEAM]: [
     DAI_MOONBEAM,
     USDC_MOONBEAM,
@@ -363,7 +366,10 @@ export async function getV3CandidatePools({
       tokenOut.symbol != 'ETH') ||
     (WRAPPED_NATIVE_CURRENCY[chainId]?.symbol == WMATIC_POLYGON.symbol &&
       tokenOut.symbol != 'MATIC' &&
-      tokenOut.symbol != 'WMATIC')
+      tokenOut.symbol != 'WMATIC') ||
+    (WRAPPED_NATIVE_CURRENCY[chainId]?.symbol == WPLQ.symbol &&
+      tokenOut.symbol != 'PLQ' &&
+      tokenOut.symbol != 'WPLQ')
   ) {
     top2EthQuoteTokenPool = _(subgraphPoolsSorted)
       .filter((subgraphPool) => {

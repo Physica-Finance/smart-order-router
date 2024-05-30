@@ -35,7 +35,7 @@ import {
   USDC_MAINNET,
   USDC_MOONBEAM,
   USDC_OPTIMISM,
-  USDC_OPTIMISTIC_KOVAN,
+  USDC_OPTIMISTIC_KOVAN, USDC_PLANQ,
   USDC_POLYGON,
   USDC_RINKEBY,
   USDC_ROPSTEN,
@@ -58,8 +58,8 @@ import {
   WBTC_OPTIMISTIC_KOVAN,
   WETH_POLYGON,
   WMATIC_POLYGON,
-  WMATIC_POLYGON_MUMBAI,
-  WXDAI_GNOSIS,
+  WMATIC_POLYGON_MUMBAI, WPLQ,
+  WXDAI_GNOSIS
 } from '../token-provider';
 
 import { IV3PoolProvider } from './pool-provider';
@@ -76,6 +76,10 @@ const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     USDC_MAINNET,
     USDT_MAINNET,
     WBTC_MAINNET,
+  ],
+  [ChainId.PLANQ]: [
+    WPLQ,
+    USDC_PLANQ,
   ],
   [ChainId.ROPSTEN]: [
     WRAPPED_NATIVE_CURRENCY[ChainId.ROPSTEN]!,
@@ -224,7 +228,7 @@ export class StaticV3SubgraphProvider implements IV3SubgraphProvider {
       .map((pool) => {
         const { token0, token1, fee, liquidity } = pool;
 
-        const poolAddress = Pool.getAddress(pool.token0, pool.token1, pool.fee);
+        const poolAddress = Pool.getAddress(pool.token0, pool.token1, pool.fee, "0xc2da9e6e524eb944c4b2cc7b6c49696cc4b64e53467d21befda7a3c1d79a3395");
 
         if (poolAddressSet.has(poolAddress)) {
           return undefined;

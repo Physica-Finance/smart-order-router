@@ -41,8 +41,8 @@ import {
   UniswapMulticallProvider,
   URISubgraphProvider,
   V2QuoteProvider,
-  V2SubgraphProviderWithFallBacks,
-  V3SubgraphProviderWithFallBacks,
+  V2SubgraphProviderWithFallBacks, V3SubgraphProvider,
+  V3SubgraphProviderWithFallBacks
 } from '../../providers';
 import {
   CachingTokenListProvider,
@@ -460,6 +460,31 @@ export class AlphaRouter
             }
           );
           break;
+        case ChainId.PLANQ:
+          this.onChainQuoteProvider = new OnChainQuoteProvider(
+            chainId,
+            provider,
+            this.multicall2Provider,
+            {
+              retries: 2,
+              minTimeout: 100,
+              maxTimeout: 1000,
+            },
+            {
+              multicallChunk: 20,
+              gasLimitPerCall: 750_000,
+              quoteMinSuccessRate: 0.1,
+            },
+            {
+              gasLimitOverride: 750_000,
+              multicallChunk: 5,
+            },
+            {
+              gasLimitOverride: 750_000,
+              multicallChunk: 4,
+            }
+          );
+          break;
         case ChainId.CELO:
         case ChainId.CELO_ALFAJORES:
           this.onChainQuoteProvider = new OnChainQuoteProvider(
@@ -567,12 +592,7 @@ export class AlphaRouter
       this.v3SubgraphProvider = new V3SubgraphProviderWithFallBacks([
         new CachingV3SubgraphProvider(
           chainId,
-          new URISubgraphProvider(
-            chainId,
-            `https://cloudflare-ipfs.com/ipns/api.uniswap.org/v1/pools/v3/${chainName}.json`,
-            undefined,
-            0
-          ),
+          new V3SubgraphProvider(chainId),
           new NodeJSCache(new NodeCache({ stdTTL: 300, useClones: false }))
         ),
         new StaticV3SubgraphProvider(chainId, this.v3PoolProvider),

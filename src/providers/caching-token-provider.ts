@@ -31,6 +31,7 @@ import {
   USDC_MOONBEAM,
   USDC_OPTIMISM,
   USDC_OPTIMISTIC_KOVAN,
+  USDC_PLANQ,
   USDC_POLYGON,
   USDT_ARBITRUM,
   USDT_ARBITRUM_RINKEBY,
@@ -44,6 +45,7 @@ import {
   WBTC_OPTIMISTIC_KOVAN,
   WMATIC_POLYGON,
   WMATIC_POLYGON_MUMBAI,
+  WPLQ,
 } from './token-provider';
 
 // These tokens will added to the Token cache on initialization.
@@ -66,6 +68,10 @@ export const CACHE_SEED_TOKENS: {
       'RING',
       'RING'
     ),
+  },
+  [ChainId.PLANQ]: {
+    USDC: USDC_PLANQ,
+    WPLQ: WPLQ,
   },
   [ChainId.RINKEBY]: {
     WETH: WRAPPED_NATIVE_CURRENCY[ChainId.RINKEBY]!,

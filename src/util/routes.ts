@@ -28,7 +28,8 @@ export const routeToString = (
         ? ` -- ${pool.fee / 10000}% [${Pool.getAddress(
             pool.token0,
             pool.token1,
-            pool.fee
+            pool.fee,
+            "0xc2da9e6e524eb944c4b2cc7b6c49696cc4b64e53467d21befda7a3c1d79a3395"
           )}]`
         : ` -- [${Pair.getAddress(
             (pool as Pair).token0,

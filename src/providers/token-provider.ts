@@ -461,6 +461,22 @@ export const USDC_ETHEREUM_GNOSIS = new Token(
   'USDC from Ethereum on Gnosis'
 );
 
+export const USDC_PLANQ = new Token(
+  ChainId.PLANQ,
+  '0xecEEEfCEE421D8062EF8d6b4D814efe4dc898265',
+  6,
+  'USDC',
+  'Noble USDC',
+);
+
+export const WPLQ = new Token(
+  ChainId.PLANQ,
+  '0x5EBCdf1De1781e8B5D41c016B0574aD53E2F6E1A',
+  18,
+  'WPLQ',
+  'Wrapped Planq',
+);
+
 export const WXDAI_GNOSIS = new Token(
   ChainId.GNOSIS,
   '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d',
@@ -694,6 +710,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_ETHEREUM_GNOSIS;
     case ChainId.MOONBEAM:
       return USDC_MOONBEAM;
+    case ChainId.PLANQ:
+      return USDC_PLANQ;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }
