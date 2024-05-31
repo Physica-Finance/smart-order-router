@@ -574,10 +574,10 @@ export const WBTC_GNOSIS = new Token(
 
 export const USDC_PLANQ = new Token(
   ChainId.PLANQ,
-  '0x75e20c5d4aade76143b8b74d1c5e2865347f9d3b',
-  18,
+  '0xecEEEfCEE421D8062EF8d6b4D814efe4dc898265',
+  6,
   'USDC',
-  'USD Coin bridged using Deltaswap'
+  'USDC Noble'
 );
 
 // Moonbeam Tokens
