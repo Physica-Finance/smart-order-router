@@ -813,6 +813,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_MOONBEAM;
     case ChainId.BSC:
       return USDC_BSC;
+    case ChainId.PLANQ:
+      return USDC_PLANQ;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }
