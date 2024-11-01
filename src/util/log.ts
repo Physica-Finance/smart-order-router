@@ -3,7 +3,7 @@
 import Logger from 'bunyan';
 import bunyan from 'bunyan';
 
-/*class NullLogger implements Logger {
+class NullLogger implements Logger {
   private ERROR_MESSAGE =
     'NullLogger does not support. Instantiate a valid logger using "setGlobalLogger"';
   addStream(_stream: Logger.Stream): void {
@@ -131,11 +131,8 @@ import bunyan from 'bunyan';
     throw new Error(this.ERROR_MESSAGE);
   }
 }
-*/
-export let log: Logger = bunyan.createLogger({
-  name: 'Default Logger',
-});
 
+export let log: Logger = new NullLogger();
 export const setGlobalLogger = (_log: Logger) => {
   log = _log;
 };
