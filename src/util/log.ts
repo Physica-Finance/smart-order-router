@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import Logger from 'bunyan';
-import bunyan from 'bunyan';
+
 
 class NullLogger implements Logger {
   private ERROR_MESSAGE =
